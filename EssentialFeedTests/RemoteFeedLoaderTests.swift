@@ -4,24 +4,24 @@ import EssentialFeed
 
 final class HTTPClientSpy: HTTPClient {
     var messages = [(url: URL,
-                     completion: (Error?, HTTPURLResponse?) -> Void)]()
+                     completion: (Result<HTTPURLResponse, Error>) -> Void)]()
 
     var requestedURLs: [URL] {
         messages.map { $0.url }
     }
 
     func get(from url: URL,
-             completion: @escaping (Error?, HTTPURLResponse?) -> Void) {
+             completion: @escaping (Result<HTTPURLResponse, Error>) -> Void) {
         messages.append((url, completion))
     }
 
     func complete(with error: Error, at index: Int = 0) {
-        messages[index].completion(error, nil)
+        messages[index].completion(.failure(error))
     }
 
     func complete(withStatusCode statusCode: Int, at index: Int = 0) {
-        let httpResponse = HTTPURLResponse(url: requestedURLs[index], statusCode: statusCode, httpVersion: nil, headerFields: nil)
-        messages[index].completion(nil, httpResponse)
+        let httpResponse = HTTPURLResponse(url: requestedURLs[index], statusCode: statusCode, httpVersion: nil, headerFields: nil)!
+        messages[index].completion(.success(httpResponse))
     }
 }
 
