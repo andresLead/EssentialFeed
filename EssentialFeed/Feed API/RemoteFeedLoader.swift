@@ -1,10 +1,5 @@
 import Foundation
 
-public protocol HTTPClient {
-    func get(from url: URL,
-             completion: @escaping (Result<(Data, HTTPURLResponse), Error>) -> Void)
-}
-
 public final class RemoteFeedLoader {
     private let url: URL
     private let client: HTTPClient
